@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CurrenciesController;
 use App\Http\Controllers\ExpendituresController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\RestProductsController;
 use App\Http\Controllers\SupplierProductsController;
 use App\Http\Controllers\SuppliersController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Route;
@@ -26,13 +28,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('register',[ AdminController::class, 'register']);
+Route::post('login', [AdminController::class, 'login']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-// Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
+Route::get('/check-export-status/{id}', [ExportRestProductsController::class, 'checkExportStatus']);
 Route::post('rest_products_export', [ExportRestProductsController::class, 'export']);
 Route::resource('expenditure', ExpendituresController::class);
+Route::resource('user', UsersController::class);
 Route::resource('income', IncomesController::class);
 Route::resource('markup', MarkupsController::class);
 Route::resource('measurement', MeasurementsController::class);
@@ -42,4 +47,4 @@ Route::resource('supplierProduct', SupplierProductsController::class);
 Route::resource('supplier', SuppliersController::class);
 Route::resource('currency', CurrenciesController::class);
 
-// });
+});

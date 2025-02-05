@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Http\Interface\AdminInterface;
+use App\Http\Repositories\AdminRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+     $this->app->singleton(AdminInterface::class,AdminRepository::class);
     }
 }

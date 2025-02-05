@@ -4,11 +4,14 @@ namespace App\Jobs;
 
 use App\Events\ExportCompleted;
 use App\Exports\RestProductExport;
+use App\Models\Export;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\Job;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -19,32 +22,37 @@ class ExportRestProductsJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    protected $filePath;
-    protected $startDate;
-    protected $endDate;
 
-    public function __construct($filePath,$startDate, $endDate)
+    public function __construct(private $data)
     {
-        $this->filePath = $filePath;
-        $this->startDate = $startDate;
-        $this->endDate = $endDate;
     }
-
     public function handle()
     {
-        Log::info('Export job started.');
-        
-        Excel::store(new RestProductExport($this->startDate, $this->endDate), $this->filePath, 'public');
+        try {
+            $filePath = $this->data['file_path'];
+            $startDate = $this->data['start_date'];
+            $endDate = $this->data['end_date'];
+            $exportId = $this->data['export_id'];
+            
+            // Generate Excel file
+            Excel::store(new RestProductExport($startDate, $endDate), $filePath, 'public');
 
-        Log::info('Export completed! Dispatching event.');
-
-        event(new ExportCompleted($this->filePath));
-
-        Log::info('ExportCompleted event dispatched.');
+            // Update export status
+            Export::where('id', $exportId)->update([
+                'status' => 'completed',
+                'file_path' => $filePath
+            ]);
+        } catch (\Exception $e) {
+            $token = env('BOT_NOTIFICATION_TOKEN');
+                Http::post("https://api.telegram.org/bot$token/sendMessage", [
+                    'chat_id' => env('BOT_ADMIN_CHAT_ID'),
+                    'text' => json_encode([
+                        'message' => $e->getMessage(),
+                        'auth' => auth()->user(),
+                        'status_code' => $e->getCode()
+                    ], JSON_PRETTY_PRINT)
+                ]);
+            Export::where('id', $exportId)->update(['status' => 'failed']);
+        }
     }
 }
-
-
-
-
-
