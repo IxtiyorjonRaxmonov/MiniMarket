@@ -5,6 +5,8 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductRequest extends FormRequest
 {
@@ -32,19 +34,42 @@ class ProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'product_name.required' => "o'lchov birligini kiriting",
-            'product_name.string' => "o'lchov birligini yozuv shaklida kiriting",
-            'active.boolean' => "o'lchov birligi holatini kiriting",
+            'product_name.required' => "mahsulot nomini kiriting",
+            'product_name.string' => "mahsulot nomini yozuv shaklida kiriting",
+            'active.boolean' => "mahsulot nomini holatini kiriting",
         ];
     }
 
 
 
+    // protected function failedValidation(Validator $validator)
+    // {
+    //     throw new HttpResponseException(response()->json([
+    //         'message' => 'Validation failed',
+    //         'errors' => $validator->errors(),
+    //     ], 422));
+    // }
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json([
-            'message' => 'Validation failed',
-            'errors' => $validator->errors(),
-        ], 422));
+        $generatedErrors = (new ValidationException($validator))->errors();
+        $message = "";
+        if ($generatedErrors) {
+            foreach ($generatedErrors as $key => $error) {
+                if (!empty($error)) {
+                    $count = count($error);
+                    for ($i = 0; $i < $count; $i++) {
+                        $message .= " " . $error[$i];
+                    }
+                }
+            }
+        }
+
+        throw new HttpResponseException(
+            response()->json([
+                "message" => $message,
+                'errors' => $generatedErrors
+            ], Response::HTTP_UNPROCESSABLE_ENTITY)
+        );
     }
+
 }

@@ -1,18 +1,17 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\CategoriesController;
-use App\Http\Controllers\CurrenciesController;
-use App\Http\Controllers\ExpendituresController;
-use App\Http\Controllers\ExportRestProductsController;
-use App\Http\Controllers\IncomesController;
-use App\Http\Controllers\MarkupsController;
-use App\Http\Controllers\MeasurementsController;
-use App\Http\Controllers\ProductsController;
-use App\Http\Controllers\RestProductsController;
-use App\Http\Controllers\SupplierProductsController;
-use App\Http\Controllers\SuppliersController;
-use App\Http\Controllers\UsersController;
+use App\Http\Routes\AdminRoute;
+use App\Http\Routes\CurrencyRoute;
+use App\Http\Routes\ExpenditureRoute;
+use App\Http\Routes\ExportRestProductRoute;
+use App\Http\Routes\IncomesRoute;
+use App\Http\Routes\MarkupRoute;
+use App\Http\Routes\MeasurementRoute;
+use App\Http\Routes\ProductRoute;
+use App\Http\Routes\RestProductRoute;
+use App\Http\Routes\SupplierProductsRoute;
+use App\Http\Routes\SuppliersRoute;
+use App\Http\Routes\UserRoute;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Route;
@@ -28,23 +27,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('register',[ AdminController::class, 'register']);
-Route::post('login', [AdminController::class, 'login']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+AdminRoute::routes();
 Route::middleware(['auth:sanctum'])->group(function () {
-Route::get('/check-export-status/{id}', [ExportRestProductsController::class, 'checkExportStatus']);
-Route::post('rest_products_export', [ExportRestProductsController::class, 'export']);
-Route::resource('expenditure', ExpendituresController::class);
-Route::resource('user', UsersController::class);
-Route::resource('income', IncomesController::class);
-Route::resource('markup', MarkupsController::class);
-Route::resource('measurement', MeasurementsController::class);
-Route::resource('product', ProductsController::class);
-Route::resource('restProduct', RestProductsController::class);
-Route::resource('supplierProduct', SupplierProductsController::class);
-Route::resource('supplier', SuppliersController::class);
-Route::resource('currency', CurrenciesController::class);
-
+    UserRoute::routes();
+    ProductRoute::routes();
+    ExportRestProductRoute::routes();
+    ExpenditureRoute::routes();
+    MeasurementRoute::routes();
+    IncomesRoute::routes();
+    MarkupRoute::routes();
+    RestProductRoute::routes();
+    SuppliersRoute::routes();
+    SupplierProductsRoute::routes();
+    CurrencyRoute::routes();
 });
