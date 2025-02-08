@@ -15,14 +15,13 @@ use Illuminate\Support\Facades\DB;
 class ExpenditureRepository implements ExpenditureInterface{
     public function index()
     {
-        return  $data = Expenditure::with(
+          $data = Expenditure::with(
             'supplierProduct.suppliers:id,company_name',
             'supplierProduct.products:id,product_name',
             'currency'
         )
             ->get();
         return response()->json([
-
             "message" => ExpenditureResource::collection($data)
         ]);
     } 
@@ -47,7 +46,7 @@ class ExpenditureRepository implements ExpenditureInterface{
 
             $income = Income::where('supplier_product_id', $supplierProductId)->latest()->first();
             $markup = Markup::where('supplier_product_id', $supplierProductId)->latest()->value('markups');
-            $currencyValueUSD = CurrencyDaily::where('currency_id', 1)->latest()->value('in_UZS');
+            $currencyValueUSD = CurrencyDaily::where('currency_id', )->latest()->value('in_UZS');
             // $currencyValueUZS = CurrencyDaily::where('currency_id', 2)->latest()->value('in_UZS');
 
 

@@ -17,14 +17,15 @@ class AdminRepository  implements AdminInterface
     {
         DB::beginTransaction();
         try {
-            $gotUsername = Users::where('username', $request->username)->exists();
-            if ($gotUsername) {
-                return response()->json(['message' => "Kiritilgan username allaqachon mavjud"], 409);
-            }
+            // $gotUsername = Users::where('username', $request->username)->exists();
+            // if ($gotUsername) {
+            //     return response()->json(['message' => "Kiritilgan username allaqachon mavjud"], 409);
+            // }
             Users::create([
                 'name' => $request->name,
                 'surname' => $request->surname,
                 'username' => $request->username,
+                'role_id' => $request->role_id,
                 'password' => bcrypt($request->password)
             ]);
             // $response =  $this->condtion($request->username);
@@ -32,7 +33,10 @@ class AdminRepository  implements AdminInterface
             return response()->json(['message' => "User yaratildi"], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
-            return response()->json(['message' => "Qandaydur xatolik"], 409);
+            return response()->json([
+                'message' => "Qandaydur xatolik",
+                'error' => $th->getMessage() 
+        ], 409);
         }
     }
 

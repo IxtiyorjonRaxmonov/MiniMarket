@@ -8,6 +8,7 @@ use App\Http\Routes\IncomesRoute;
 use App\Http\Routes\MarkupRoute;
 use App\Http\Routes\MeasurementRoute;
 use App\Http\Routes\ProductRoute;
+use App\Http\Routes\ProfitRoute;
 use App\Http\Routes\RestProductRoute;
 use App\Http\Routes\SupplierProductsRoute;
 use App\Http\Routes\SuppliersRoute;
@@ -41,6 +42,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
     MarkupRoute::routes();
     RestProductRoute::routes();
     SuppliersRoute::routes();
+    ProfitRoute::routes();
+});
+
+
+Route::middleware(['auth','admin'])->group(function () {
     SupplierProductsRoute::routes();
     CurrencyRoute::routes();
 });
+
+// Route::middleware(['auth:api', 'admin'])->group(function () {
+
+// SupplierProductsRoute::routes();
+// CurrencyRoute::routes();
+// });
+
+// Route::get('admin','/test', function () {
+//     return response('Route is working!');
+// });

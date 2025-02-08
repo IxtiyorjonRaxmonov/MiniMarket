@@ -5,20 +5,25 @@ namespace App\Http\Repositories;
 use App\Http\Interface\CurrencyInterface;
 use App\Models\Currency;
 
-class CurrencyRepository implements CurrencyInterface{
+class CurrencyRepository implements CurrencyInterface
+{
 
-    public function index(){
+    public function index()
+    {
         return Currency::select('currency_name')->get();
-        
     }
 
-    public function store($request){
+    public function store($request)
+    {
         Currency::create([
             "currency_name" => $request->currency_name,
         ]);
     }
-
-    public function update($request, $id){
+    public function toggleUpdateCurrencyActive() {
+        
+    }
+    public function update($request, $id)
+    {
         try {
             $currency = Currency::find($id);
             $currency->update([
@@ -32,7 +37,8 @@ class CurrencyRepository implements CurrencyInterface{
         }
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         $currency = Currency::destroy($id);
 
         return response()->json([

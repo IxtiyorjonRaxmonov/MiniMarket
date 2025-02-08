@@ -9,4 +9,10 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
+    // public function checkAdmin() {
+    //     if(auth()->id == $adminId){
+    //         return true;
+    //     }
+    //     return false;
+    // }
 }

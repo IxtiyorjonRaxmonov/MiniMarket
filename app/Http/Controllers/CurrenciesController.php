@@ -9,12 +9,15 @@ use Illuminate\Http\Request;
 class CurrenciesController extends Controller
 {
 
-    public function __construct(private CurrencyInterface $currency) {
-
-    }
+    public function __construct(private CurrencyInterface $currency) {}
     public function index()
     {
         return $this->currency->index();
+        // $repsonse = $this->checkAdmin();
+        // if ($repsonse) {
+        // } else {
+            // return response()->json(['Forbidden'], 403);
+        // }
     }
 
 
