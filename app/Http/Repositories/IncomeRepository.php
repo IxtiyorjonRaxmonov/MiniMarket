@@ -5,13 +5,33 @@ namespace App\Http\Repositories;
 use App\Http\Interface\ExpenditureInterface;
 use App\Http\Interface\IncomeInterface;
 use App\Http\Resources\IncomeResource;
+use App\Imports\ImportIncomeExcel;
 use App\Models\CurrencyDaily;
 use App\Models\Income;
 use App\Models\RestProduct;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class IncomeRepository implements IncomeInterface
 {
+
+    public function incomeExcel($request)
+    {
+        
+        $request->validate([
+            "file" => "required|file"
+        ]); 
+
+       
+        Excel::import(new ImportIncomeExcel, $request->file('file'));
+
+        return response()->json([
+            "message" => "kiritilgan ma'lumotlar databazaga saqlandi"
+        ]);
+    }
+
+
     public function index()
     {
         $data = Income::with(

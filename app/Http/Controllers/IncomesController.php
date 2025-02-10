@@ -23,6 +23,14 @@ class IncomesController extends Controller
        return $this->incomeRepository->index();
     }
 
+
+    public function incomeExcel(Request $request)
+    {
+        
+       return $this->incomeRepository->incomeExcel($request);
+       
+    }
+
     /**
      * Show the form for creating a new resource.
      */

@@ -10,5 +10,7 @@ class IncomesRoute
     public static function routes()
     {
         Route::resource('income', IncomesController::class);
+        Route::post('incomeExcel', [IncomesController::class, 'incomeExcel']);
+
     }
 }
