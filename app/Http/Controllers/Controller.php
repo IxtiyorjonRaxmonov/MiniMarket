@@ -19,8 +19,6 @@ class Controller extends BaseController
             ->join('rules', 'rules.id', 'user_rules.rule_id')
             ->join('modules', 'modules.id', 'rules.module_id')
             ->join('actions', 'actions.id', 'rules.action_id')
-            // ->select('action', $action)
-            // ->select('module', $module)
             ->where('modules.module', $module)
             ->where('actions.action', $action)
             ->where('rules.active', true)

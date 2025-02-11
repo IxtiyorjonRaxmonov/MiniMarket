@@ -23,9 +23,7 @@ class ExportRestProductsJob implements ShouldQueue
      * Create a new job instance.
      */
 
-    public function __construct(private $data)
-    {
-    }
+    public function __construct(private $data) {}
     public function handle()
     {
         try {
@@ -33,25 +31,23 @@ class ExportRestProductsJob implements ShouldQueue
             $startDate = $this->data['start_date'];
             $endDate = $this->data['end_date'];
             $exportId = $this->data['export_id'];
-            
-            // Generate Excel file
+
             Excel::store(new RestProductExport($startDate, $endDate), $filePath, 'public');
 
-            // Update export status
             Export::where('id', $exportId)->update([
                 'status' => 'completed',
                 'file_path' => $filePath
             ]);
         } catch (\Exception $e) {
             $token = env('BOT_NOTIFICATION_TOKEN');
-                Http::post("https://api.telegram.org/bot$token/sendMessage", [
-                    'chat_id' => env('BOT_ADMIN_CHAT_ID'),
-                    'text' => json_encode([
-                        'message' => $e->getMessage(),
-                        'auth' => auth()->user(),
-                        'status_code' => $e->getCode()
-                    ], JSON_PRETTY_PRINT)
-                ]);
+            Http::post("https://api.telegram.org/bot$token/sendMessage", [
+                'chat_id' => env('BOT_ADMIN_CHAT_ID'),
+                'text' => json_encode([
+                    'message' => $e->getMessage(),
+                    'auth' => auth()->user(),
+                    'status_code' => $e->getCode()
+                ], JSON_PRETTY_PRINT)
+            ]);
             Export::where('id', $exportId)->update(['status' => 'failed']);
         }
     }

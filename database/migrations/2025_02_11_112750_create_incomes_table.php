@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('measurement_id');
             $table->foreign('measurement_id')->references('id')->on('measurements')->onDelete('restrict');
             $table->float('quantity');
+            $table->integer('remaining_quantity')->default(0);
             $table->timestamps();
         });
     }

@@ -6,6 +6,7 @@ use App\Http\Interface\ExpenditureInterface;
 use App\Http\Interface\IncomeInterface;
 use App\Http\Resources\IncomeResource;
 use App\Imports\ImportIncomeExcel;
+use App\Jobs\ImportIncomeExcelJob;
 use App\Models\CurrencyDaily;
 use App\Models\Income;
 use App\Models\RestProduct;
@@ -18,17 +19,24 @@ class IncomeRepository implements IncomeInterface
 
     public function incomeExcel($request)
     {
+        try {
+            
+            $request->validate([
+                "file" => "required|file"
+            ]); 
+    
+            $filePath = $request->file('file')->store('imports');
+    
+            ImportIncomeExcelJob::dispatch($filePath);
+           
+    
+            return response()->json([
+                "message" => "kiritilgan ma'lumotlar databazaga saqlandi"
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
         
-        $request->validate([
-            "file" => "required|file"
-        ]); 
-
-       
-        Excel::import(new ImportIncomeExcel, $request->file('file'));
-
-        return response()->json([
-            "message" => "kiritilgan ma'lumotlar databazaga saqlandi"
-        ]);
     }
 
 
@@ -69,6 +77,7 @@ class IncomeRepository implements IncomeInterface
                 "per_purchase_UZS" => $per_purchase_UZS ? $per_purchase_UZS : $per_purchase_USD * $currencyValue,
                 "measurement_id" => $request->measurement_id,
                 "quantity" => $request->quantity,
+                "remaining_quantity" => $request->quantity
             ]);
 
             $restProduct = RestProduct::where("supplier_product_id", $request->supplier_product_id)->first();
