@@ -7,16 +7,18 @@ use App\Http\Resources\ExportResidueResource;
 use App\Jobs\ExportRestProductsJob;
 use App\Models\Export;
 
-class ExportRestProductRepository implements ExportRestProductInterface{
+class ExportRestProductRepository implements ExportRestProductInterface
+{
     public function checkExportStatus()
     {
-        $export = Export::where('owner_id', auth()->id())->get();
+        $userId = auth()->user()->id;
+        $export = Export::where('owner_id', $userId)->get();
         return ExportResidueResource::collection($export);
-
     }
 
     public function export($request)
     {
+        $userId = auth()->user()->id;
         $validated = $request->validate([
             'start_date' => 'required|date|before_or_equal:end_date',
             'end_date' => 'required|date|after_or_equal:start_date',
@@ -24,7 +26,11 @@ class ExportRestProductRepository implements ExportRestProductInterface{
 
         $filePath = 'exports/' . 'qoldiq' . '.xlsx';
         // return 444;
-        $export = Export::create(['status' => 'processing']);
+        $export = Export::create([
+            'status' => 'processing',
+            'owner_id' => $userId
+            
+        ]);
         $data = [
             'file_path' => $filePath,
             'start_date' => $validated['start_date'],
@@ -35,10 +41,7 @@ class ExportRestProductRepository implements ExportRestProductInterface{
 
         return response()->json([
             'status' => 'processing',
-            'message' => 'Export is still being processed. Please try again later.'
+            'message' => "Export id -> $export->id"
         ]);
-
     }
-
 }
-    

@@ -45,8 +45,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     ProfitRoute::routes();
 });
 
-
-Route::middleware(['auth','admin'])->group(function () {
+Route::middleware(['auth:sanctum','admin'])->group(function () {
     SupplierProductsRoute::routes();
     CurrencyRoute::routes();
 });

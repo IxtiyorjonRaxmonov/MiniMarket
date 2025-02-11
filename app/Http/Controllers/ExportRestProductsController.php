@@ -20,7 +20,7 @@ class ExportRestProductsController extends Controller
     {
         return $this->exportRestProductInterface->checkExportStatus();
     }
-
+    
     public function export(Request $request)
     {
         return $this->exportRestProductInterface->export($request);

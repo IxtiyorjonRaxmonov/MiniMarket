@@ -17,6 +17,11 @@ class ProductsController extends Controller
 
     public function index()
     {
+        if (!$this->check('add', 'product')) {
+            return response()->json([
+                "message" => "sizda bunday huquq yo'q!"
+            ]);
+        }
         return response()->json([
             $this->productInterface->index()
         ]);
