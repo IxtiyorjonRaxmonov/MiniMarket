@@ -33,7 +33,7 @@ class SupplierRequest extends FormRequest
     {
         return [
             'company_name.required' => "taminotchi malumotini kiriting",
-            'company_name.string' => "taminotchi malumotini raqam shaklida kiriting",
+            'company_name.string' => "taminotchi malumotini yozuv shaklida kiriting",
             'active.boolean' => "taminotchi holati ma'lumoti notog'ri kiritilgan",        ];
     }
 

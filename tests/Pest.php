@@ -11,15 +11,17 @@
 |
 */
 
+use App\Models\Role;
+use App\Models\Supplier;
 use App\Models\Users;
 
 uses(
     Tests\TestCase::class,
-    // Illuminate\Foundation\Testing\RefreshDatabase::class,    
+    Illuminate\Foundation\Testing\RefreshDatabase::class,    
 )->in('Feature');
 
 /*
-|--------------------------------------------------------------------------
+|---------------------------    -----------------------------------------------
 | Expectations
 |--------------------------------------------------------------------------
 |
@@ -46,5 +48,15 @@ expect()->extend('toBeOne', function () {
 
 function createUser()
 {
-    return Users::factory()->create();
+    return Users::factory()->create()->toArray();
+}
+
+function createRole()
+{
+    return Role::factory()->create();
+}
+
+function createSupplier()
+{
+    return Supplier::factory()->create()->toArray();
 }

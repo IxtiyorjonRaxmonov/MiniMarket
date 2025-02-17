@@ -21,7 +21,7 @@ class AdminRepository  implements AdminInterface
             // if ($gotUsername) {
             //     return response()->json(['message' => "Kiritilgan username allaqachon mavjud"], 409);
             // }
-            Users::create([
+            $user = Users::create([
                 'name' => $request->name,
                 'surname' => $request->surname,
                 'username' => $request->username,
@@ -30,7 +30,7 @@ class AdminRepository  implements AdminInterface
             ]);
             // $response =  $this->condtion($request->username);
             DB::commit();
-            return response()->json(['message' => "User yaratildi"], 200);
+            return response()->json(['message' => "User yaratildi", 'user' => $user ], 201);
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([

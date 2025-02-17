@@ -15,7 +15,7 @@ class ExampleTest extends TestCase
         // $response = $this->get('/');
 
         $sum = 2+5;
-        $this->assertEquals($sum,8);
+        $this->assertEquals($sum,7);
         // $response->assertStatus(200);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
 use App\Models\Users;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -22,11 +23,9 @@ class UsersFactory extends Factory
         return [
             'name' => fake()->name(),
             'surname' => fake()->lastName(),
-            'username' => fake()->unique()->userName()            ,
-            'role_id' => fake()->randomElement([1, 2, 3]) ,
-            'password' => Hash::make('password'),
-            
-           
+            'username' => fake()->unique()->userName(),
+            'role_id' => Role::firstOrCreate(['id' => 1], ['role' => 'Admin'])->id,
+            'password' => Hash::make('password')
         ];
     }
 }
